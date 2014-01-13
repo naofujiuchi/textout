@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="lib" path="C:/Users/naofujiuchi/.eclipse/org.eclipse.platform_4.2.0_262093976/plugins/processing.plugin.core_0.2.5.1/Resources/libraries/serial/library/Serial I/O.jar"/>
-	<classpathentry kind="src" path="data"/>
-	<classpathentry kind="src" path="generated/preproc"/>
-	<classpathentry kind="con" path="/org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
-	<classpathentry kind="lib" path="C:/Users/naofujiuchi/.eclipse/org.eclipse.platform_4.2.0_262093976/plugins/processing.plugin.core_0.2.5.1/Resources/lib/core.jar"/>
-	<classpathentry kind="output" path="generated/compiler"/>
-</classpath>
