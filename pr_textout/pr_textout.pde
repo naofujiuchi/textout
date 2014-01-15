@@ -1,17 +1,14 @@
-// declare font usage
-PFont font;
-// import serial library
-import processing.serial.*;
-// create an instance of serial class
-Serial myPort;
+PFont font;  // declare font usage
+import processing.serial.*;  // import serial library
+Serial myPort;  // create an instance of serial class
 
 // *****************
 // Set as you like! Interval's unit is "min"!
-int interval = 1; // unit = min
+int interval = 5; // unit = min
 int samplenumber = 16;
 // Set starting time!
-int _hour = 13;
-int _min = 58;
+int _hour = 0;
+int _min = 0;
 // *****************
 
 // variable declaration
@@ -27,8 +24,8 @@ int dday;
 int hhour;
 int mmin;
 int ssec;
-int remain; // unit = min
-int elapse; // unit = min
+int remain;  // unit = min
+int elapse;  // unit = min
 // use PrintWriter class
 PrintWriter output;
 
@@ -40,54 +37,43 @@ void setup(){
 	textFont(font);
 	textAlign(RIGHT);
 	state = "Running";
-	// set serial port
-	myPort = new Serial(this, "COM5", 9600);
-	// set serial buffer size
-	myPort.buffer(2 * samplenumber);
-	// create new text file
-	output = createWriter("ppfd.txt");
-	// Calculate remaining time [min]
-	remainingTime();
+	myPort = new Serial(this, "COM5", 9600);  // set serial port
+	myPort.buffer(2 * samplenumber);  // set serial buffer size
+	output = createWriter("ppfd.txt");  // create new text file
+	remainingTime();  // Calculate remaining time [min]
 } 
 
-// draw
 void draw(){
 	background(0);
-	// call obtanTime()
-	obtainTime();
+	obtainTime();  // call obtanTime()
 	view();
-	// send logging signal
 	if(((elapse - remain) >= 0) && ((elapse - remain) % interval == 0) && (ssec == 0)){
-		myPort.write(samplenumber);
+		myPort.write(samplenumber);  // send logging signal
 	}
-	// read data and calculate ppfd
 	if(myPort.available() == 2 * samplenumber){
-		readData();
+		readData();  // read data and calculate ppfd
 		obtainTime();
 		output.println(time + ":00" + data);
 	}
 }
 	
-// Calculate remaining time [min]
-void remainingTime(){
+void remainingTime(){  // Calculate remaining time [min]
 	obtainTime();
 	remain = 60 * (_hour - hhour) + (_min - mmin);
 }
 
-// calculate remaining time
-void obtainTime(){
+void obtainTime(){  // calculate remaining time
 	yyear = year();
 	mmonth = month();
 	dday = day();
 	hhour = hour();
 	mmin = minute();
 	ssec = second();
-	elapse = millis() / 60000 + 1; // unit = min
+	elapse = millis() / 60000 + 1;  // unit = min
 	time = yyear + "/" + mmonth + "/" + dday + " " + nf(hhour,2) + ":" + nf(mmin, 2);
 }
 
-// set data from arduino into array
-void readData(){
+void readData(){  // set data from arduino into array
 	data = "";
 	for(int i = 1; i <= samplenumber; i++){
 		value[2 * i - 1] = myPort.read();
@@ -98,39 +84,29 @@ void readData(){
         myPort.clear();
 }
 
-// create interface window
-void view(){
+void view(){  // create interface window
 	text(state, 170, 10);
         text("Interval [min] = " + interval, 170, 40);
 	text("Time = " + time + ":" + nf(ssec, 2), 170, 70);
 }
 
-// change state "Running" or "Stop" depend on press count
-void mousePressed(){
-	// clear buffer
-	state = "Done";
+void mousePressed(){  // change state "Running" or "Stop" depend on press count
+	state = "Done";  // clear buffer
 	myPort.clear();
-	// writes the remaining data to the file
-	output.flush();
-	// finishes the file
-	output.close();
-	// Stops the program
-	exit();
+	output.flush();  // writes the remaining data to the file
+	output.close();  // finishes the file
+	exit();  // Stops the program
 }
 
-// caluculate ppfd
-int calPpfd(int samnum, int x, int y){
+int calPpfd(int samnum, int x, int y){  // caluculate ppfd
 	float val;
 	float voltage;
 	float a;
 	float b;
 	int ppfd;
-	// Convert 2 bytes to float
-	val = 256 * x + y;
-	// change value into voltage
-	voltage = map(val, 0, 1023, 0, 5000);
-	// input sensor parameter
-	switch(samnum){
+	val = 256 * x + y;  // Convert 2 bytes to float
+	voltage = map(val, 0, 1023, 0, 5000);  // change value into voltage
+	switch(samnum){  // input sensor parameter
 		case 1:
 			a = 1;
 			b = 0;
