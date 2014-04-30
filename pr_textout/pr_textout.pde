@@ -37,7 +37,7 @@ void setup(){
 	textFont(font);
 	textAlign(RIGHT);
 	state = "Running";
-	myPort = new Serial(this, "COM5", 9600);  // set serial port
+	myPort = new Serial(this, "/dev/cu.usbmodem1421", 9600);  // set serial port
 	myPort.buffer(2 * samplenumber);  // set serial buffer size
 	output = createWriter("ppfd.txt");  // create new text file
 	remainingTime();  // Calculate remaining time [min]
@@ -47,13 +47,14 @@ void draw(){
 	background(0);
 	obtainTime();  // call obtanTime()
 	view();
-	if(((elapse - remain) >= 0) && ((elapse - remain) % interval == 0) && (ssec == 0)){
+//	if(((elapse - remain) >= 0) && ((elapse - remain) % interval == 0) && (ssec == 0)){
+	if(((elapse - remain) >= 0) && (ssec % interval == 0)){
 		myPort.write(samplenumber);  // send logging signal
 	}
 	if(myPort.available() == 2 * samplenumber){
 		readData();  // read data and calculate ppfd
 		obtainTime();
-		output.println(time + ":00" + data);
+		output.println(time  + ":" + nf(ssec, 2) + data);
 	}
 }
 	
